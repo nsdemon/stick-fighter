@@ -34,11 +34,11 @@
   const PLAYER_MIN_X = 80;
   const PLAYER_MAX_X = canvas.width - 280;
   const ENEMY_SPEED = 3;
-  const ENEMY_MIN_X = 640;
-  const ENEMY_MAX_X = canvas.width - 80;
+  const ENEMY_MIN_X = 220;
+  const ENEMY_MAX_X = PLAYER_MAX_X + ENEMY_ATTACK_RANGE - 10;
   const ENEMY_ATTACK_RANGE = 160;
   const ENEMY_APPROACH_RANGE = 200;
-  const ENEMY_RETREAT_FRAMES = 25;
+  const ENEMY_RETREAT_FRAMES = 12;
 
   let playerX = 180;
   let enemyX = canvas.width - 180;
@@ -203,11 +203,11 @@
       let targetX;
       if (enemyRetreat > 0) {
         enemyRetreat--;
-        targetX = enemyX + 50;
+        targetX = enemyX + 18;
       } else if (Math.abs(dist) > ENEMY_APPROACH_RANGE) {
         targetX = playerX + 130;
       } else {
-        targetX = enemyX + (Math.random() < 0.5 ? -35 : 35);
+        targetX = enemyX + (Math.random() < 0.5 ? -18 : 18);
       }
       const dx = targetX - enemyX;
       if (Math.abs(dx) > 2) {
