@@ -25,6 +25,7 @@
   let points = 0;
   let currentSwordIndex = 0;
   let playerHP = 100;
+  let playerMaxHP = 100;
   let enemyHP = 100;
   let gameOver = false;
 
@@ -85,7 +86,15 @@
   }
 
   loadState();
-  updateUI();
+  playerMaxHP = getPlayerMaxHP();
+  playerHP = Math.min(playerHP, playerMaxHP);
+
+  function getPlayerMaxHP() {
+    return 100 + currentSwordIndex * 18;
+  }
+  function getEnemyMaxHP() {
+    return 90 + enemyTier() * 18;
+  }
 
   function currentSword() {
     return SWORDS[currentSwordIndex];
@@ -277,7 +286,7 @@
   }
 
   function spawnEnemy() {
-    enemyMaxHP = 80 + enemyTier() * 12;
+    enemyMaxHP = getEnemyMaxHP();
     enemyHP = enemyMaxHP;
     enemyX = canvas.width - 180;
     enemyRetreat = 0;
@@ -299,8 +308,9 @@
   function restart() {
     document.getElementById("gameover-modal").hidden = true;
     gameOver = false;
-    playerHP = 100;
-    enemyMaxHP = 80 + enemyTier() * 12;
+    playerMaxHP = getPlayerMaxHP();
+    playerHP = playerMaxHP;
+    enemyMaxHP = getEnemyMaxHP();
     enemyHP = enemyMaxHP;
     playerX = 180;
     enemyX = canvas.width - 180;
@@ -314,7 +324,7 @@
   function updateUI() {
     document.getElementById("points").textContent = points;
     document.getElementById("sword-name").textContent = currentSword().name;
-    const playerHpPct = Math.max(0, (playerHP / 100) * 100);
+    const playerHpPct = Math.max(0, (playerHP / playerMaxHP) * 100);
     const enemyHpPct = Math.max(0, (enemyHP / enemyMaxHP) * 100);
     document.getElementById("player-hp").style.width = playerHpPct + "%";
     document.getElementById("enemy-hp").style.width = enemyHpPct + "%";
@@ -343,6 +353,8 @@
         btn.addEventListener("click", function () {
           points -= s.cost;
           currentSwordIndex = i;
+          playerMaxHP = getPlayerMaxHP();
+          playerHP = playerMaxHP;
           saveState();
           updateUI();
           openShop();
