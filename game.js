@@ -18,15 +18,20 @@
   let enemyHP = 100;
   let gameOver = false;
 
-  const PLAYER_X = 180;
   const ENEMY_X = canvas.width - 180;
   const FLOOR_Y = canvas.height - 60;
   const FIGURE_HEIGHT = 120;
+  const PLAYER_SPEED = 4;
+  const PLAYER_MIN_X = 80;
+  const PLAYER_MAX_X = canvas.width - 280;
 
+  let playerX = 180;
   let playerSwing = 0;
   let enemySwing = 0;
   const SWING_DURATION = 12;
   let lastEnemyAttack = 0;
+
+  const keys = { w: false, a: false, s: false, d: false };
 
   function getState() {
     return {
@@ -73,9 +78,8 @@
     const dir = facingRight ? 1 : -1;
     const headY = y - FIGURE_HEIGHT + 20;
     const neckY = headY + 18;
-    const bodyTop = neckY + 4;
-    const bodyBottom = y - 40;
-    const armY = bodyTop + 15;
+    const shoulderY = neckY + 14;
+    const torsoBottom = y - 42;
 
     ctx.strokeStyle = "#e8d4b8";
     ctx.lineWidth = 3;
@@ -87,29 +91,34 @@
 
     ctx.beginPath();
     ctx.moveTo(x, neckY);
-    ctx.lineTo(x, bodyBottom);
+    ctx.lineTo(x, torsoBottom);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(x, bodyTop);
-    ctx.lineTo(x - 35 * dir, bodyBottom - 15);
+    ctx.moveTo(x, torsoBottom);
+    ctx.lineTo(x - 32 * dir, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, torsoBottom);
+    ctx.lineTo(x + 32 * dir, y);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(x, bodyTop);
-    ctx.lineTo(x + 35 * dir, bodyBottom - 15);
+    ctx.moveTo(x, shoulderY);
+    ctx.lineTo(x - 28 * dir, shoulderY - 15);
     ctx.stroke();
 
     const armAngle = swingProgress > 0
       ? (Math.PI / 2) * (1 - swingProgress) * dir
-      : (Math.PI / 4) * dir;
-    const swordHandX = x + Math.cos(armAngle) * 40 * dir;
-    const swordHandY = armY + Math.sin(armAngle) * 40;
+      : (Math.PI / 5) * dir;
+    const swordHandX = x + Math.cos(armAngle) * 38 * dir;
+    const swordHandY = shoulderY + Math.sin(armAngle) * 38;
 
     ctx.beginPath();
-    ctx.moveTo(x, armY);
+    ctx.moveTo(x, shoulderY);
     ctx.lineTo(swordHandX, swordHandY);
     ctx.stroke();
+
     let swordAngle = armAngle + (Math.PI / 2) * dir;
     if (swingProgress > 0) {
       swordAngle += (Math.PI * 0.85 * swingProgress) * dir;
@@ -141,10 +150,13 @@
       return;
     }
 
+    if (keys.a) playerX = Math.max(PLAYER_MIN_X, playerX - PLAYER_SPEED);
+    if (keys.d) playerX = Math.min(PLAYER_MAX_X, playerX + PLAYER_SPEED);
+
     if (playerSwing > 0) {
       playerSwing--;
       if (playerSwing === Math.floor(SWING_DURATION / 2)) {
-        const dist = Math.abs(ENEMY_X - PLAYER_X);
+        const dist = Math.abs(ENEMY_X - playerX);
         if (dist < 160 && enemyHP > 0) {
           const dmg = currentSword().damage;
           enemyHP = Math.max(0, enemyHP - dmg);
@@ -162,7 +174,7 @@
     if (enemySwing > 0) {
       enemySwing--;
       if (enemySwing === Math.floor(SWING_DURATION / 2)) {
-        const dist = Math.abs(ENEMY_X - PLAYER_X);
+        const dist = Math.abs(ENEMY_X - playerX);
         if (dist < 160 && playerHP > 0) {
           playerHP = Math.max(0, playerHP - 15);
           updateUI();
@@ -170,7 +182,7 @@
         }
       }
     } else if (enemyHP > 0 && lastEnemyAttack > 45) {
-      const dist = Math.abs(ENEMY_X - PLAYER_X);
+      const dist = Math.abs(ENEMY_X - playerX);
       if (dist < 180) {
         enemySwing = SWING_DURATION;
         lastEnemyAttack = 0;
@@ -196,7 +208,7 @@
     const enemySwingNorm = enemySwing / SWING_DURATION;
 
     drawStickFigure(
-      PLAYER_X,
+      playerX,
       FLOOR_Y,
       true,
       playerSwingNorm,
@@ -239,6 +251,7 @@
     gameOver = false;
     playerHP = 100;
     enemyHP = 100;
+    playerX = 180;
     playerSwing = 0;
     enemySwing = 0;
     lastEnemyAttack = 0;
@@ -303,6 +316,16 @@
       e.preventDefault();
       attack();
     }
+    if (e.code === "KeyW") keys.w = true;
+    if (e.code === "KeyA") keys.a = true;
+    if (e.code === "KeyS") keys.s = true;
+    if (e.code === "KeyD") keys.d = true;
+  });
+  document.addEventListener("keyup", function (e) {
+    if (e.code === "KeyW") keys.w = false;
+    if (e.code === "KeyA") keys.a = false;
+    if (e.code === "KeyS") keys.s = false;
+    if (e.code === "KeyD") keys.d = false;
   });
 
   canvas.addEventListener("click", function () {
