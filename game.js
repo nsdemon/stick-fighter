@@ -33,11 +33,11 @@
   const PLAYER_SPEED = 4;
   const PLAYER_MIN_X = 80;
   const PLAYER_MAX_X = canvas.width - 280;
+  const ENEMY_ATTACK_RANGE = 160;
+  const ENEMY_APPROACH_RANGE = 200;
   const ENEMY_SPEED = 3;
   const ENEMY_MIN_X = 220;
   const ENEMY_MAX_X = PLAYER_MAX_X + ENEMY_ATTACK_RANGE - 10;
-  const ENEMY_ATTACK_RANGE = 160;
-  const ENEMY_APPROACH_RANGE = 200;
   const ENEMY_RETREAT_FRAMES = 12;
 
   let playerX = 180;
