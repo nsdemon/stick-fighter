@@ -10,6 +10,16 @@
     { id: "steel", name: "Steel Sword", cost: 150, damage: 45, color: "#C0C0C0" },
     { id: "knight", name: "Knight's Blade", cost: 400, damage: 70, color: "#E8E8E8" },
     { id: "legend", name: "Legendary Edge", cost: 1000, damage: 120, color: "#FFD700" },
+    { id: "flame", name: "Flame Brand", cost: 1500, damage: 155, color: "#FF6B35" },
+    { id: "frost", name: "Frost Fang", cost: 2200, damage: 195, color: "#7DD3FC" },
+    { id: "shadow", name: "Shadow Reaper", cost: 3000, damage: 240, color: "#4C1D95" },
+    { id: "holy", name: "Holy Avenger", cost: 4000, damage: 290, color: "#FEF08A" },
+    { id: "dragon", name: "Dragon's Tooth", cost: 5200, damage: 345, color: "#DC2626" },
+    { id: "void", name: "Void Cleaver", cost: 6600, damage: 405, color: "#1F2937" },
+    { id: "storm", name: "Stormcaller", cost: 8200, damage: 470, color: "#38BDF8" },
+    { id: "phoenix", name: "Phoenix Edge", cost: 10000, damage: 540, color: "#F97316" },
+    { id: "titan", name: "Titan's Wrath", cost: 12500, damage: 620, color: "#A3A3A3" },
+    { id: "infinity", name: "Infinity Blade", cost: 15500, damage: 720, color: "#A78BFA" },
   ];
 
   let points = 0;
@@ -119,7 +129,7 @@
     ctx.lineTo(swordHandX, swordHandY);
     ctx.stroke();
 
-    let swordAngle = armAngle + (Math.PI / 2) * dir;
+    let swordAngle = armAngle - (Math.PI / 2) * dir;
     if (swingProgress > 0) {
       swordAngle += (Math.PI * 0.85 * swingProgress) * dir;
     }
