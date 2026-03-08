@@ -1,0 +1,226 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1a0a0a 0%, #2d1515 50%, #1a0a0a 100%);
+  color: #e8d4b8;
+  font-family: "Silkscreen", cursive, sans-serif;
+}
+
+.root {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #e8a84a;
+  text-shadow: 0 0 8px rgba(232, 168, 74, 0.4);
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.score strong,
+.sword-name {
+  color: #c9a227;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid #8b6914;
+  background: linear-gradient(180deg, #3d2a0a 0%, #2a1d06 100%);
+  color: #e8d4b8;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-shop {
+  background: linear-gradient(180deg, #4a3512 0%, #2a1d06 100%);
+  color: #e8a84a;
+}
+
+.arena {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#game-canvas {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  background: #0d0505;
+  border: 3px solid #4a2525;
+  border-radius: 8px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.health-bars {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.health-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.health-wrap span {
+  font-size: 0.75rem;
+  color: #a08060;
+}
+
+.health-wrap.player .fill { background: linear-gradient(90deg, #2d6a2d, #4ade4a); }
+.health-wrap.enemy .fill { background: linear-gradient(90deg, #6a2d2d, #de4a4a); }
+
+.bar {
+  height: 12px;
+  background: #1a1210;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #3a2a25;
+}
+
+.bar .fill {
+  height: 100%;
+  width: 100%;
+  transition: width 0.2s ease;
+}
+
+.hint {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  color: #6a5544;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-content {
+  background: linear-gradient(180deg, #2a1f18 0%, #1a120d 100%);
+  border: 2px solid #6a4a35;
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin: 0 0 1rem;
+  color: #e8a84a;
+  font-size: 1.25rem;
+}
+
+.your-points {
+  margin-bottom: 1rem;
+  color: #c9a227;
+}
+
+.sword-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  text-align: left;
+}
+
+.sword-list li {
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+  background: rgba(0,0,0,0.3);
+  border-radius: 6px;
+  border: 1px solid #3a2a25;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sword-list li.owned {
+  border-color: #2d6a2d;
+  color: #8ade8a;
+}
+
+.sword-list li.locked {
+  opacity: 0.8;
+  color: #8a7a6a;
+}
+
+.sword-list .cost {
+  color: #c9a227;
+  font-size: 0.9rem;
+}
+
+.sword-list .damage {
+  color: #de6a6a;
+  font-size: 0.85rem;
+}
+
+.btn-close,
+.btn-restart {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+#gameover-modal .modal-content h2.defeat { color: #de4a4a; }
+#gameover-modal .modal-content h2.victory { color: #4ade4a; }

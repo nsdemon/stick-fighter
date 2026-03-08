@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stick Fighter — Sword Duel</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="root">
+    <header class="header">
+      <h1>Stick Fighter</h1>
+      <div class="score-row">
+        <span class="score">Points: <strong id="points">0</strong></span>
+        <span class="sword-name" id="sword-name">Wooden Sword</span>
+      </div>
+      <button type="button" class="btn btn-shop" id="shop-btn">Sword Shop</button>
+    </header>
+
+    <main class="arena">
+      <canvas id="game-canvas" width="900" height="400"></canvas>
+      <div class="health-bars">
+        <div class="health-wrap player">
+          <span>You</span>
+          <div class="bar"><div class="fill" id="player-hp"></div></div>
+        </div>
+        <div class="health-wrap enemy">
+          <span>Enemy</span>
+          <div class="bar"><div class="fill" id="enemy-hp"></div></div>
+        </div>
+      </div>
+      <p class="hint">Space or Click — Attack</p>
+    </main>
+
+    <div class="modal" id="shop-modal" hidden>
+      <div class="modal-content">
+        <h2>Sword Shop</h2>
+        <p class="your-points">Your points: <strong id="shop-points">0</strong></p>
+        <ul class="sword-list" id="sword-list"></ul>
+        <button type="button" class="btn btn-close" id="shop-close">Close</button>
+      </div>
+    </div>
+
+    <div class="modal" id="gameover-modal" hidden>
+      <div class="modal-content">
+        <h2 id="gameover-title">Defeated</h2>
+        <p id="gameover-msg">The enemy got you. Spend points on better swords!</p>
+        <button type="button" class="btn btn-restart" id="restart-btn">Fight Again</button>
+      </div>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
