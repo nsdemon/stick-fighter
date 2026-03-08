@@ -28,18 +28,26 @@
   let enemyHP = 100;
   let gameOver = false;
 
-  const ENEMY_X = canvas.width - 180;
   const FLOOR_Y = canvas.height - 60;
   const FIGURE_HEIGHT = 120;
   const PLAYER_SPEED = 4;
   const PLAYER_MIN_X = 80;
   const PLAYER_MAX_X = canvas.width - 280;
+  const ENEMY_SPEED = 3;
+  const ENEMY_MIN_X = 640;
+  const ENEMY_MAX_X = canvas.width - 80;
+  const ENEMY_ATTACK_RANGE = 160;
+  const ENEMY_APPROACH_RANGE = 200;
+  const ENEMY_RETREAT_FRAMES = 25;
 
   let playerX = 180;
+  let enemyX = canvas.width - 180;
   let playerSwing = 0;
   let enemySwing = 0;
+  let enemyRetreat = 0;
   const SWING_DURATION = 12;
   let lastEnemyAttack = 0;
+  let enemyMaxHP = 100;
 
   const keys = { w: false, a: false, s: false, d: false };
 
@@ -81,6 +89,16 @@
 
   function currentSword() {
     return SWORDS[currentSwordIndex];
+  }
+
+  function enemyTier() {
+    return Math.min(currentSwordIndex, SWORDS.length - 1);
+  }
+  function enemySwordStats() {
+    return SWORDS[enemyTier()];
+  }
+  function enemyDamage() {
+    return Math.max(8, Math.floor(enemySwordStats().damage * 0.35));
   }
 
   function drawStickFigure(x, y, facingRight, swingProgress, swordColor, swordLength) {
@@ -166,8 +184,8 @@
     if (playerSwing > 0) {
       playerSwing--;
       if (playerSwing === Math.floor(SWING_DURATION / 2)) {
-        const dist = Math.abs(ENEMY_X - playerX);
-        if (dist < 160 && enemyHP > 0) {
+        const dist = Math.abs(enemyX - playerX);
+        if (dist < ENEMY_ATTACK_RANGE && enemyHP > 0) {
           const dmg = currentSword().damage;
           enemyHP = Math.max(0, enemyHP - dmg);
           points += 5;
@@ -180,19 +198,38 @@
       }
     }
 
+    if (enemyHP > 0 && enemySwing === 0) {
+      const dist = enemyX - playerX;
+      let targetX;
+      if (enemyRetreat > 0) {
+        enemyRetreat--;
+        targetX = enemyX + 50;
+      } else if (Math.abs(dist) > ENEMY_APPROACH_RANGE) {
+        targetX = playerX + 130;
+      } else {
+        targetX = enemyX + (Math.random() < 0.5 ? -35 : 35);
+      }
+      const dx = targetX - enemyX;
+      if (Math.abs(dx) > 2) {
+        enemyX += dx > 0 ? ENEMY_SPEED : -ENEMY_SPEED;
+        enemyX = Math.max(ENEMY_MIN_X, Math.min(ENEMY_MAX_X, enemyX));
+      }
+    }
+
     lastEnemyAttack++;
     if (enemySwing > 0) {
       enemySwing--;
       if (enemySwing === Math.floor(SWING_DURATION / 2)) {
-        const dist = Math.abs(ENEMY_X - playerX);
-        if (dist < 160 && playerHP > 0) {
-          playerHP = Math.max(0, playerHP - 15);
+        const dist = Math.abs(enemyX - playerX);
+        if (dist < ENEMY_ATTACK_RANGE && playerHP > 0) {
+          playerHP = Math.max(0, playerHP - enemyDamage());
+          enemyRetreat = ENEMY_RETREAT_FRAMES;
           updateUI();
           if (playerHP <= 0) endGame(false);
         }
       }
     } else if (enemyHP > 0 && lastEnemyAttack > 45) {
-      const dist = Math.abs(ENEMY_X - playerX);
+      const dist = Math.abs(enemyX - playerX);
       if (dist < 180) {
         enemySwing = SWING_DURATION;
         lastEnemyAttack = 0;
@@ -225,12 +262,12 @@
       currentSword().color
     );
     drawStickFigure(
-      ENEMY_X,
+      enemyX,
       FLOOR_Y,
       false,
       enemySwingNorm,
-      "#708090",
-      55
+      enemySwordStats().color,
+      50 + (enemyTier() + 1) * 5
     );
   }
 
@@ -240,7 +277,10 @@
   }
 
   function spawnEnemy() {
-    enemyHP = 100;
+    enemyMaxHP = 80 + enemyTier() * 12;
+    enemyHP = enemyMaxHP;
+    enemyX = canvas.width - 180;
+    enemyRetreat = 0;
   }
 
   function endGame(won) {
@@ -260,10 +300,13 @@
     document.getElementById("gameover-modal").hidden = true;
     gameOver = false;
     playerHP = 100;
-    enemyHP = 100;
+    enemyMaxHP = 80 + enemyTier() * 12;
+    enemyHP = enemyMaxHP;
     playerX = 180;
+    enemyX = canvas.width - 180;
     playerSwing = 0;
     enemySwing = 0;
+    enemyRetreat = 0;
     lastEnemyAttack = 0;
     updateUI();
   }
@@ -272,7 +315,7 @@
     document.getElementById("points").textContent = points;
     document.getElementById("sword-name").textContent = currentSword().name;
     const playerHpPct = Math.max(0, (playerHP / 100) * 100);
-    const enemyHpPct = Math.max(0, (enemyHP / 100) * 100);
+    const enemyHpPct = Math.max(0, (enemyHP / enemyMaxHP) * 100);
     document.getElementById("player-hp").style.width = playerHpPct + "%";
     document.getElementById("enemy-hp").style.width = enemyHpPct + "%";
   }
